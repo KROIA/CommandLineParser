@@ -47,10 +47,14 @@ namespace CommandLineParser
 		static void setArgumentAssignment(const std::string& assignment) { s_argumentAssignment = assignment; }
 		static const std::string& argumentAssignment() { return s_argumentAssignment; }
 
-		static bool parse(std::vector<Argument>& arguments, int argc, const char* argv[]);
+		static void setValueListSeparator(const std::string& separator) { s_valueListSeparator = separator; }
+		static const std::string& valueListSeparator() { return s_valueListSeparator; }
+
+		static bool parse(std::vector<Argument>& arguments, int argc, char* argv[]);
 		static bool parse(std::vector<Argument>& arguments, const std::string& commandLine);
 		static bool parse(Argument& out, const std::string& command);
 		static void shrink(std::vector<Argument>& arguments);
+		static size_t findArgument(const std::vector<Argument>& arguments, const std::string& name);
 
 		private:
 		std::vector<std::string> m_names;
@@ -58,5 +62,6 @@ namespace CommandLineParser
 
 		static std::string s_argumentPrefix;
 		static std::string s_argumentAssignment;
+		static std::string s_valueListSeparator;
 	};
 }

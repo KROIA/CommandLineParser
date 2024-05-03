@@ -5,6 +5,7 @@ namespace CommandLineParser
 {
 	std::string Argument::s_argumentPrefix = "-";
 	std::string Argument::s_argumentAssignment = "=";
+	std::string Argument::s_valueListSeparator = ";";
 
 	Argument::Argument(const std::vector<std::string>& names, const std::string& value)
 		: m_names(names)
@@ -80,9 +81,41 @@ namespace CommandLineParser
 		return false;
 	}
 
-	bool Argument::parse(std::vector<Argument>& arguments, int argc, const char* argv[])
+	bool Argument::parse(std::vector<Argument>& arguments, int argc, char* argv[])
 	{
-
+		std::vector<Argument> result;
+		result.reserve(argc - 1);
+		std::string currentArg;
+		bool copyPrevious = false;
+		for (int i = argc-1; i >= 1; --i)
+		{
+			Argument arg("");
+			if (copyPrevious)
+			{
+				currentArg = std::string(argv[i]) + " " + currentArg;
+			}
+			else
+				currentArg = argv[i];
+			if (parse(arg, currentArg))
+			{
+				result.push_back(arg);
+				copyPrevious = false;
+			}
+			else
+			{
+				copyPrevious = true;
+				continue;
+			}
+		}
+		
+		arguments.clear();
+		arguments.reserve(result.size());
+		for (size_t i = 0; i < result.size(); ++i)
+		{
+			arguments.push_back(result[result.size() - i - 1]);
+		}
+		shrink(arguments);
+		return true;
 	}
 	bool Argument::parse(std::vector<Argument>& arguments, 
 						 const std::string& commandLine)
@@ -162,7 +195,38 @@ namespace CommandLineParser
 	}
 	bool Argument::parse(Argument& out, const std::string& command)
 	{
+		const std::string argumentRegex = "("+s_argumentPrefix+"([a-zA-Z]+[a-zA-Z0-9]*)(?:" + s_argumentAssignment + "(.*)|))";
 
+		std::regex re(argumentRegex);
+		std::smatch match;
+		if (std::regex_search(command, match, re))
+		{
+			std::string key = match[2].str();
+			std::string value = match[3].str();
+			if (key.empty())
+				return false;
+			if (value.empty())
+			{
+				out = Argument(key);
+				return true;
+			}
+			
+			std::vector<std::string> values;
+			size_t firstArraySeparator;
+			while ((firstArraySeparator = value.find(s_valueListSeparator)) != std::string::npos)
+			{
+				std::string substr = value.substr(0, firstArraySeparator);
+				if (substr.size() > 0)
+					values.push_back(substr);
+				value = value.substr(firstArraySeparator + s_valueListSeparator.size());
+			}
+			if(value.size() > 0)
+				values.push_back(value);
+
+			out = Argument(key, values);
+			return true;
+		}
+		return false;
 	}
 	void Argument::shrink(std::vector<Argument>& arguments)
 	{
@@ -189,6 +253,16 @@ namespace CommandLineParser
 				result.push_back(arg);
 		}
 		arguments = result;
+	}
+
+	size_t Argument::findArgument(const std::vector<Argument>& arguments, const std::string& name)
+	{
+		for (size_t i = 0; i < arguments.size(); ++i)
+		{
+			if (arguments[i].hasName(name))
+				return i;
+		}
+		return std::string::npos;
 	}
 
 }

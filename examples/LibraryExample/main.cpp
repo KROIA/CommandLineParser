@@ -27,10 +27,34 @@ int main(int argc, char* argv[])
 		std::cout << "Argument " << i << ": " << argv[i] << std::endl;
 	}
 
-	std::string arguments = "-help -v=50 -a=\"Hello\" -v5 -test=\"\\\"\\nHel\n\\\"lo\\\"\" -list=\"a;b;c\" -list2=1;2;3;\"ffes fesf\";5;\"Hello \\\" \\; jkli\";";
+	std::string arguments = " -a=Hello -UA";
+	char* argv2[] = { argv[0], (char*)arguments.c_str(),"AAA","-v","-k=5"};
+	int argc2 = 5;
+	//::string arguments = "-help -v=50 -a=\"Hello\" -v5 -test=\"\\\"\\nHel\n\\\"lo\\\"\" -list=\"a;b;c\" -list2=1;2;3;\"ffes fesf\";5;\"Hello \\\" \\; jkli\";";
 
 	std::vector<CommandLineParser::Argument> list;
-	CommandLineParser::Argument::parse(list,arguments);
+	CommandLineParser::Argument::parse(list, argc, argv);
+	//CommandLineParser::Argument::parse(list, argc2, argv2);
+	for (size_t i = 0; i < list.size(); i++)
+	{
+		if (list[i].getValueCount() > 1)
+		{
+			std::cout << "Parsed Argument " << i << ": \"" << list[i].getName() << "\" = \"";
+			for (size_t j = 0; j < list[i].getValueCount(); j++)
+			{
+				std::cout << list[i].getValue(j);
+				if (j < list[i].getValueCount() - 1)
+					std::cout << "\", \"";
+			}
+			std::cout <<"\""<< std::endl;
+		}
+		else if(list[i].getValueCount() == 1)
+			std::cout << "Parsed Argument " << i << ": \"" << list[i].getName() << "\" = \"" << list[i].getValue() << "\"" << std::endl;
+		else if(list[i].getValueCount() == 0)
+			std::cout << "Parsed Argument " << i << ": \"" << list[i].getName() << "\"" << std::endl;
+	}
+	
+
 #ifdef QT_WIDGETS_ENABLED
 	QWidget* widget = CommandLineParser::LibraryInfo::createInfoWidget();
 	if (widget)
