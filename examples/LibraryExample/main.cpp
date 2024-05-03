@@ -22,6 +22,11 @@ int main(int argc, char* argv[])
 	CommandLineParser::Profiler::start();
 	CommandLineParser::LibraryInfo::printInfo();
 
+	for (int i = 0; i < argc; i++)
+	{
+		std::cout << "Argument " << i << ": " << argv[i] << std::endl;
+	}
+
 	std::string arguments = "-help -v=50 -a=\"Hello\" -v5 -test=\"\\\"\\nHel\n\\\"lo\\\"\" -list=\"a;b;c\" -list2=1;2;3;\"ffes fesf\";5;\"Hello \\\" \\; jkli\";";
 
 	std::vector<CommandLineParser::Argument> list;

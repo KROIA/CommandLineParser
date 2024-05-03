@@ -80,11 +80,15 @@ namespace CommandLineParser
 		return false;
 	}
 
+	bool Argument::parse(std::vector<Argument>& arguments, int argc, const char* argv[])
+	{
+
+	}
 	bool Argument::parse(std::vector<Argument>& arguments, 
-						 const std::string& argument)
+						 const std::string& commandLine)
 	{
 		bool success = true;
-		std::string arg = argument;
+		std::string arg = commandLine;
 		// Regexp to split arguments:
 			// (-([a-zA-Z]+[a-zA-Z0-9]*)(?:=((?:[^"\s]+(;)*|"(?:[^"\\]|\\.)*")*))?)
 		const std::string argumentRegex = "("+s_argumentPrefix+"([a-zA-Z]+[a-zA-Z0-9]*)(?:"+s_argumentAssignment+"((?:[^\"\\s]+(;)*|\"(?:[^\"\\\\]|\\\\.)*\")*))?)";
@@ -155,6 +159,10 @@ namespace CommandLineParser
 		shrink(arguments);
 
 		return success;
+	}
+	bool Argument::parse(Argument& out, const std::string& command)
+	{
+
 	}
 	void Argument::shrink(std::vector<Argument>& arguments)
 	{

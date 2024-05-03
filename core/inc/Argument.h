@@ -47,7 +47,9 @@ namespace CommandLineParser
 		static void setArgumentAssignment(const std::string& assignment) { s_argumentAssignment = assignment; }
 		static const std::string& argumentAssignment() { return s_argumentAssignment; }
 
-		static bool parse(std::vector<Argument>& arguments, const std::string& argument);
+		static bool parse(std::vector<Argument>& arguments, int argc, const char* argv[]);
+		static bool parse(std::vector<Argument>& arguments, const std::string& commandLine);
+		static bool parse(Argument& out, const std::string& command);
 		static void shrink(std::vector<Argument>& arguments);
 
 		private:
