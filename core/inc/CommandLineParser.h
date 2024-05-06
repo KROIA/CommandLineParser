@@ -8,4 +8,5 @@
 
 /// USER_SECTION_START 2
 #include "Argument.h"
+#include "ArgumentList.h"
 /// USER_SECTION_END

@@ -32,8 +32,8 @@ int main(int argc, char* argv[])
 	int argc2 = 5;
 	//::string arguments = "-help -v=50 -a=\"Hello\" -v5 -test=\"\\\"\\nHel\n\\\"lo\\\"\" -list=\"a;b;c\" -list2=1;2;3;\"ffes fesf\";5;\"Hello \\\" \\; jkli\";";
 
-	std::vector<CommandLineParser::Argument> list;
-	CommandLineParser::Argument::parse(list, argc, argv);
+	CommandLineParser::ArgumentList list;
+	CommandLineParser::ArgumentList::parse(list, argc, argv);
 	//CommandLineParser::Argument::parse(list, argc2, argv2);
 	for (size_t i = 0; i < list.size(); i++)
 	{
