@@ -7,6 +7,10 @@ namespace CommandLineParser
 	std::string Argument::s_argumentAssignment = "=";
 	std::string Argument::s_valueListSeparator = ";";
 
+	Argument::Argument()
+	{
+
+	}
 	Argument::Argument(const std::vector<std::string>& names, const std::string& value)
 		: m_names(names)
 		, m_values({ value })
