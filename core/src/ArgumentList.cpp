@@ -176,4 +176,12 @@ namespace CommandLineParser
 			return Argument("");
 		return (*this)[index];
 	}
+	bool ArgumentList::getValueIfExists(const std::string& name, std::string& value) const
+	{
+		size_t index = findArgument(name);
+		if (index == std::string::npos)
+			return false;
+		value = (*this)[index].getValue();
+		return true;
+	}
 }
