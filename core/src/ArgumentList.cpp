@@ -160,4 +160,11 @@ namespace CommandLineParser
 		}
 		return std::string::npos;
 	}
+	Argument ArgumentList::getArgument(const std::string& name) const
+	{
+		size_t index = findArgument(name);
+		if (index == std::string::npos)
+			return Argument("");
+		return (*this)[index];
+	}
 }

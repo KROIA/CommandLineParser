@@ -14,6 +14,7 @@ namespace CommandLineParser
 
 		bool hasArgument(const std::string& name) const;
 		size_t findArgument(const std::string& name) const;
+		Argument getArgument(const std::string& name) const;
 		void shrink();
 	private:
 
