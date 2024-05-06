@@ -4,7 +4,7 @@
 
 namespace CommandLineParser
 {
-	bool ArgumentList::parse(ArgumentList& arguments, int argc, char* argv[])
+	bool ArgumentList::parse(int argc, char* argv[])
 	{
 		std::vector<Argument> result;
 		result.reserve(argc - 1);
@@ -31,17 +31,16 @@ namespace CommandLineParser
 			}
 		}
 
-		arguments.clear();
-		arguments.reserve(result.size());
+		vector::clear();
+		vector::reserve(result.size());
 		for (size_t i = 0; i < result.size(); ++i)
 		{
-			arguments.push_back(result[result.size() - i - 1]);
+			vector::push_back(result[result.size() - i - 1]);
 		}
-		arguments.shrink();
+		shrink();
 		return true;
 	}
-	bool ArgumentList::parse(ArgumentList& arguments,
-		const std::string& commandLine)
+	bool ArgumentList::parse(const std::string& commandLine)
 	{
 		bool success = true;
 		std::string arg = commandLine;
@@ -68,7 +67,7 @@ namespace CommandLineParser
 			}
 			if (value.empty())
 			{
-				arguments.push_back(Argument(key));
+				vector::push_back(Argument(key));
 				continue;
 			}
 			std::vector<std::string> values;
@@ -109,11 +108,12 @@ namespace CommandLineParser
 				//current += value[i];
 			}
 			Argument argInst(key, values);
-			arguments.push_back(argInst);
+			vector::push_back(argInst);
 		}
 
-		arguments.shrink();
-
+		shrink();
+		if(!success)
+			vector::clear();
 		return success;
 	}
 	bool ArgumentList::hasArgument(const std::string& name) const

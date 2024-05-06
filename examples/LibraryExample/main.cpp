@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 	//::string arguments = "-help -v=50 -a=\"Hello\" -v5 -test=\"\\\"\\nHel\n\\\"lo\\\"\" -list=\"a;b;c\" -list2=1;2;3;\"ffes fesf\";5;\"Hello \\\" \\; jkli\";";
 
 	CommandLineParser::ArgumentList list;
-	CommandLineParser::ArgumentList::parse(list, argc, argv);
+	list.parse(argc, argv);
 	//CommandLineParser::Argument::parse(list, argc2, argv2);
 	for (size_t i = 0; i < list.size(); i++)
 	{

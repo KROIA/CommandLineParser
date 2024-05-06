@@ -9,8 +9,8 @@ namespace CommandLineParser
 	class COMMAND_LINE_PARSER_EXPORT ArgumentList : public std::vector<Argument>
 	{
 	public:
-		static bool parse(ArgumentList& arguments, int argc, char* argv[]);
-		static bool parse(ArgumentList& arguments, const std::string& commandLine);
+		bool parse(int argc, char* argv[]);
+		bool parse(const std::string& commandLine);
 
 		bool hasArgument(const std::string& name) const;
 		size_t findArgument(const std::string& name) const;
