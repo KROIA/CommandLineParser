@@ -125,6 +125,15 @@ namespace CommandLineParser
 		}
 		return false;
 	}
+	bool ArgumentList::hasArgument(const std::vector<std::string>& names) const
+	{
+		for (const Argument& arg : *this)
+		{
+			if (arg.hasAnyName(names))
+				return true;
+		}
+		return false;
+	}
 	void ArgumentList::shrink()
 	{
 		// remove duplicates and empty arguments

@@ -13,6 +13,7 @@ namespace CommandLineParser
 		bool parse(const std::string& commandLine);
 
 		bool hasArgument(const std::string& name) const;
+		bool hasArgument(const std::vector<std::string> &names) const; // returns true if any of the arguments is present
 		size_t findArgument(const std::string& name) const;
 		Argument getArgument(const std::string& name) const;
 		void shrink();
