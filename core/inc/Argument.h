@@ -8,6 +8,7 @@ namespace CommandLineParser
 	class COMMAND_LINE_PARSER_EXPORT Argument
 	{
 		public:
+		Argument();
 		Argument(const std::vector<std::string>& names, const std::string& value);
 		Argument(const std::string& name, const std::string& value);
 		Argument(const std::vector<std::string>& names, const std::vector<std::string>& value);
