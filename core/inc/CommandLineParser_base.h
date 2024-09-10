@@ -6,6 +6,7 @@
 
 #include "CommandLineParser_global.h"
 #include "CommandLineParser_debug.h"
+#include "CommandLineParser_info.h"
 
 /// USER_SECTION_START 2
 

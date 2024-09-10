@@ -4,7 +4,9 @@
 
 /// USER_SECTION_END
 
-#include "CommandLineParser_base.h"
+#include "CommandLineParser_global.h"
+#include "CommandLineParser_debug.h"
+
 #include <sstream>
 
 #define STRINGIFY(x) #x
