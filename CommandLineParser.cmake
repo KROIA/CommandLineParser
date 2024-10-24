@@ -4,7 +4,7 @@ include(FetchContent)
 function(dep LIBRARY_MACRO_NAME SHARED_LIB STATIC_LIB STATIC_PROFILE_LIB)
     # Define the git repository and tag to download from
     set(LIB_NAME CommandLineParser)
-    set(LIB_MACRO_NAME COMMAND_LINE_PARSER)
+    set(LIB_MACRO_NAME COMMAND_LINE_PARSER_LIBRARY_AVAILABLE)
     set(GIT_REPO https://github.com/KROIA/CommandLineParser.git)
     set(GIT_TAG main)
 
