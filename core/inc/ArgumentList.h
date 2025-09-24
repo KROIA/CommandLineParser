@@ -6,7 +6,7 @@
 
 namespace CommandLineParser
 {
-	class COMMAND_LINE_PARSER_EXPORT ArgumentList : public std::vector<Argument>
+	class COMMAND_LINE_PARSER_API ArgumentList : public std::vector<Argument>
 	{
 	public:
 		bool parse(int argc, char* argv[]);
