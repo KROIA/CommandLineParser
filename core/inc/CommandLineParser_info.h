@@ -29,7 +29,7 @@ namespace CommandLineParser
 
 /// USER_SECTION_END
 
-	class COMMAND_LINE_PARSER_EXPORT LibraryInfo
+	class COMMAND_LINE_PARSER_API LibraryInfo
 	{
 		LibraryInfo() = delete;
 		LibraryInfo(const LibraryInfo&) = delete;

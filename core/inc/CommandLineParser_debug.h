@@ -89,7 +89,7 @@ namespace CommandLineParser
 /// USER_SECTION_START 4
 
 /// USER_SECTION_END
-	class COMMAND_LINE_PARSER_EXPORT Profiler
+	class COMMAND_LINE_PARSER_API Profiler
 	{
 	public:
 		/// USER_SECTION_START 5
@@ -112,7 +112,7 @@ namespace CommandLineParser
 
 
 #if LOGGER_LIBRARY_AVAILABLE == 1
-	class COMMAND_LINE_PARSER_EXPORT Logger 
+	class COMMAND_LINE_PARSER_API Logger 
 	{
 		/// USER_SECTION_START 8
 

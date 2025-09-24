@@ -11,13 +11,13 @@
 #ifndef BUILD_STATIC
 	//#pragma message("COMMANDLINEPARSER_LIB is a shared library")
 	#if defined(COMMANDLINEPARSER_LIB)
-		#define COMMAND_LINE_PARSER_EXPORT __declspec(dllexport)
+		#define COMMAND_LINE_PARSER_API __declspec(dllexport)
 	#else
-		#define COMMAND_LINE_PARSER_EXPORT __declspec(dllimport)
+		#define COMMAND_LINE_PARSER_API __declspec(dllimport)
 	#endif
 #else 
 	//#pragma message("COMMANDLINEPARSER_LIB is a static library")
-	#define COMMAND_LINE_PARSER_EXPORT
+	#define COMMAND_LINE_PARSER_API
 #endif
 
 /// USER_SECTION_START 2
