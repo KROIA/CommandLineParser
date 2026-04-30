@@ -88,7 +88,7 @@ namespace CommandLineParser
 	
 	bool Argument::parse(Argument& out, const std::string& command)
 	{
-		const std::string argumentRegex = "("+s_argumentPrefix+"([a-zA-Z]+[a-zA-Z0-9]*)(?:" + s_argumentAssignment + "(.*)|))";
+		const std::string argumentRegex = "("+s_argumentPrefix+"([a-zA-Z][a-zA-Z0-9_-]*)(?:" + s_argumentAssignment + "(.*)|))";
 
 		std::regex re(argumentRegex);
 		std::smatch match;

@@ -1,41 +1,97 @@
 #include "ArgumentList.h"
 #include <regex>
+#include <cctype>
 
 
 namespace CommandLineParser
 {
+	static std::vector<std::string> splitValueList(const std::string& value, const std::string& sep)
+	{
+		std::vector<std::string> values;
+		if (sep.empty())
+		{
+			if (!value.empty())
+				values.push_back(value);
+			return values;
+		}
+		size_t start = 0;
+		while (start <= value.size())
+		{
+			size_t pos = value.find(sep, start);
+			if (pos == std::string::npos)
+			{
+				if (start < value.size())
+					values.push_back(value.substr(start));
+				break;
+			}
+			if (pos > start)
+				values.push_back(value.substr(start, pos - start));
+			start = pos + sep.size();
+		}
+		return values;
+	}
+
 	bool ArgumentList::parse(int argc, char* argv[])
 	{
-		std::vector<Argument> result;
-		result.reserve(argc - 1);
-		std::string currentArg;
-		bool copyPrevious = false;
-		for (int i = argc - 1; i >= 1; --i)
-		{
-			Argument arg("");
-			if (copyPrevious)
-			{
-				currentArg = std::string(argv[i]) + " " + currentArg;
-			}
-			else
-				currentArg = argv[i];
-			if (Argument::parse(arg, currentArg))
-			{
-				result.push_back(arg);
-				copyPrevious = false;
-			}
-			else
-			{
-				copyPrevious = true;
-				continue;
-			}
-		}
-
 		vector::clear();
-		vector::reserve(result.size());
-		for (size_t i = 0; i < result.size(); ++i)
+		if (argc <= 1)
+			return true;
+		vector::reserve(argc - 1);
+
+		const std::string& prefix = Argument::getArgumentPrefix();
+		const std::string& assign = Argument::getArgumentAssignment();
+		const std::string& sep = Argument::getValueListSeparator();
+
+		auto startsWithPrefix = [&prefix](const std::string& s) -> bool
 		{
-			vector::push_back(result[result.size() - i - 1]);
+			return !prefix.empty() && s.size() >= prefix.size()
+				&& s.compare(0, prefix.size(), prefix) == 0;
+		};
+
+		for (int i = 1; i < argc; ++i)
+		{
+			std::string token = argv[i];
+			if (!startsWithPrefix(token))
+				continue;
+			token.erase(0, prefix.size());
+			// Tolerate "--name" when the configured prefix is a single "-".
+			while (!token.empty() && token.compare(0, prefix.size(), prefix) == 0)
+				token.erase(0, prefix.size());
+
+			// Name must start with a letter, then [a-zA-Z0-9_-]*.
+			if (token.empty() || !std::isalpha(static_cast<unsigned char>(token[0])))
+				continue;
+			size_t nameEnd = 1;
+			while (nameEnd < token.size())
+			{
+				char c = token[nameEnd];
+				if (std::isalnum(static_cast<unsigned char>(c)) || c == '_' || c == '-')
+					++nameEnd;
+				else
+					break;
+			}
+			std::string name = token.substr(0, nameEnd);
+
+			std::string value;
+			bool hasValue = false;
+			if (nameEnd < token.size())
+			{
+				// The only valid char after the name is the assignment delimiter.
+				if (assign.empty() || token.compare(nameEnd, assign.size(), assign) != 0)
+					continue;
+				value = token.substr(nameEnd + assign.size());
+				hasValue = true;
+			}
+			else if (i + 1 < argc && !startsWithPrefix(argv[i + 1]))
+			{
+				value = argv[++i];
+				hasValue = true;
+			}
+
+			if (!hasValue || value.empty())
+				vector::push_back(Argument(name));
+			else
+				vector::push_back(Argument(name, splitValueList(value, sep)));
 		}
 		shrink();
 		return true;
@@ -46,7 +102,7 @@ namespace CommandLineParser
 		std::string arg = commandLine;
 		// Regexp to split arguments:
 			// (-([a-zA-Z]+[a-zA-Z0-9]*)(?:=((?:[^"\s]+(;)*|"(?:[^"\\]|\\.)*")*))?)
-		const std::string argumentRegex = "(" + Argument::getArgumentPrefix() + "([a-zA-Z]+[a-zA-Z0-9]*)(?:" + Argument::getArgumentAssignment() + "((?:[^\"\\s]+(;)*|\"(?:[^\"\\\\]|\\\\.)*\")*))?)";
+		const std::string argumentRegex = "(" + Argument::getArgumentPrefix() + "([a-zA-Z][a-zA-Z0-9_-]*)(?:" + Argument::getArgumentAssignment() + "((?:[^\"\\s]+|\"(?:[^\"\\\\]|\\\\.)*\")*))?)";
 		std::regex re(argumentRegex);
 		std::smatch match;
 		std::vector<std::pair<std::string, std::string>> keyValues;
@@ -73,40 +129,33 @@ namespace CommandLineParser
 			std::vector<std::string> values;
 			bool inQuote = false;
 			std::string current;
-			size_t start = 0, end = 0;
+			const std::string& sep = Argument::getValueListSeparator();
 			for (size_t i = 0; i < value.size(); ++i)
 			{
-				if (value[i] == '"')
+				char c = value[i];
+				if (c == '\\' && i + 1 < value.size())
 				{
-					bool innerQuote = false;
-					if (i > 0)
-						if (value[i - 1] == '\\')
-							innerQuote = true;
-					if (!innerQuote)
-					{
-						inQuote = !inQuote;
-						if (inQuote)
-							start = i + 1;
-						else
-						{
-							end = i;
-							//	current = value.substr(start, end - start);
-							//	values.push_back(current);
-						}
-						continue;
-					}
-				}
-				if (value[i] == ';' && !inQuote)
-				{
-					end = i;
-					current = value.substr(start, end - start);
-					values.push_back(current);
-					start = end + 1;
-					//current.clear();
+					current += value[i + 1];
+					++i;
 					continue;
 				}
-				//current += value[i];
+				if (c == '"')
+				{
+					inQuote = !inQuote;
+					continue;
+				}
+				if (!inQuote && !sep.empty() && value.compare(i, sep.size(), sep) == 0)
+				{
+					if (!current.empty())
+						values.push_back(current);
+					current.clear();
+					i += sep.size() - 1;
+					continue;
+				}
+				current += c;
 			}
+			if (!current.empty())
+				values.push_back(current);
 			Argument argInst(key, values);
 			vector::push_back(argInst);
 		}
