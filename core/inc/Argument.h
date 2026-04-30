@@ -5,7 +5,7 @@
 
 namespace CommandLineParser
 {
-	class COMMAND_LINE_PARSER_EXPORT Argument
+	class COMMAND_LINE_PARSER_API Argument
 	{
 		public:
 		Argument();
